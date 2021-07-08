@@ -1,0 +1,15 @@
+[Unit]
+Description=WOL MQTT Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=nobody
+EnvironmentFile=/usr/local/etc/wol-mqtt.env
+ExecStart=/usr/local/bin/wol-mqtt.py
+
+[Install]
+WantedBy=multi-user.target
