@@ -5,6 +5,7 @@
 # Chris Burrows
 # 8 July 2021
 
+import os
 import logging
 import logging.handlers
 import time
@@ -12,13 +13,13 @@ import json
 import subprocess
 import paho.mqtt.client as mqtt
 
-UPDATE_INTERVAL = 60
+UPDATE_INTERVAL = int(os.getenv("UPDATE_INTERVAL", "60"))
 
-MQTT_BROKER = "192.168.1.1"
-MQTT_PORT = 1883
+MQTT_BROKER = os.getenv("MQTT_BROKER", "mqtt.local")
+MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))
+MQTT_USER = os.getenv("MQTT_USER", "mqtt")
+MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "password")
 MQTT_BASE_TOPIC = "wol"
-MQTT_USER = "user"
-MQTT_PASSWORD = "password"
 
 LOG_FILENAME = '/var/log/wol-mqtt.log'
 
@@ -109,7 +110,7 @@ try:
 
             while(True):
                 log.debug("MQTT: publishing online Status update")
-                client.publish(MQTT_BASE_TOPIC + "/status", payload="online")
+                client.publish(MQTT_BASE_TOPIC + "/status", payload="online")                
                 time.sleep(UPDATE_INTERVAL)
 
         except ConnectionRefusedError:
@@ -118,7 +119,7 @@ try:
 
 except KeyboardInterrupt:
     log.info("Interrupted... shutting down")
-
+    
 # mark us offline and disconnect
 log.info("MQTT: Publishing offline status")
 
@@ -129,3 +130,4 @@ log.info("MQTT: disconnecting")
 
 client.loop_stop()
 client.disconnect()
+
