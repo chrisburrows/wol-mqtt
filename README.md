@@ -1,0 +1,2 @@
+# wol-mqtt
+  Simple Python script to allow Wake-On-LAN packets to be sent from a remote node triggered by an MQTT message.  This is quite specific to my network and home automation setup. Essentially, I have devices segregated into different VLANs such that the node that I want to trigger the WOL isn't on the same subnet as the target devices. This allows a remote node on the correct subnet to send the WOL packet in response to an MQTT request.
