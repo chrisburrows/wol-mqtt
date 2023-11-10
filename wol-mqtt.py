@@ -34,7 +34,7 @@ def on_connect(client, userdata, flags, rc):
         # reconnect then subscriptions will be renewed.
 
         client.subscribe(MQTT_BASE_TOPIC + "/command")
-        client.publish(MQTT_BASE_TOPIC + "/status", payload="online")
+        client.publish(MQTT_BASE_TOPIC + "/status", payload="online", retain=True)
     else:
         log.error("Failed to correctly login to MQTT broker")
         client.disconnect()
@@ -96,7 +96,7 @@ log.info("Starting up...")
 try:
     # Initialise connect to MQTT broker
     client = mqtt.Client(client_id="wol-mqtt")
-    client.will_set(MQTT_BASE_TOPIC + "/status", payload="offline")
+    client.will_set(MQTT_BASE_TOPIC + "/status", payload="offline", retain=True)
     client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
     client.on_connect = on_connect
     client.on_message = on_message
@@ -109,8 +109,6 @@ try:
             client.loop_start()
 
             while(True):
-                log.debug("MQTT: publishing online Status update")
-                client.publish(MQTT_BASE_TOPIC + "/status", payload="online")                
                 time.sleep(UPDATE_INTERVAL)
 
         except ConnectionRefusedError:
